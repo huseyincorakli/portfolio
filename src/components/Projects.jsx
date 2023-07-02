@@ -13,6 +13,7 @@ const Projects = () => {
   const [githubData, setGithubData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSite, setSelectedSite] = useState(null);
   const itemsPerPage = 3;
   const totalPages = Math.ceil(githubData.length / itemsPerPage);
 
@@ -34,19 +35,15 @@ const Projects = () => {
         .then((data) => {
           setGithubData(data);
           setLoading(false);
-          console.log(data[0].description)
         })
         .catch((error) => {
-          console.log("Veri yakalama hatası:", error);
           setLoading(false);
         });
     };
     getGithubData();
   }, []);
   useEffect(() => {
-    console.log(githubData.length);
   }, [githubData]);
-  console.log(githubData.length);
   return (
     <div className="main container mx-auto my-10 px-8 p-8 text-white flex flex-wrap justify-center">
       <Helmet>
@@ -71,7 +68,7 @@ const Projects = () => {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button href={item.html_url} size="small" color="primary">
+          <Button href={item.html_url}  target="_blank" size="small" color="primary">
             Source Code
           </Button>
         </CardActions>

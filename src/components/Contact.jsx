@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 const Contact = () => {
   const [emailSent, setEmailSent] = useState(false);
+  const [sendLoading,setSendLoading]= useState(false)
   const service_id = import.meta.env.VITE_EMAILJS_SERVICE_ID;
   const template_id = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
   const key = import.meta.env.VITE_EMAILJS_API_KEY;
@@ -22,6 +23,7 @@ const Contact = () => {
     e.preventDefault();
 
     if (!emailSent) {
+      setSendLoading(true)
       emailjs
         .sendForm(
           service_id,
@@ -35,16 +37,19 @@ const Contact = () => {
               alertify.set("notifier", "position", "top-center");
               alertify.success("Message sent successfully!");
               setEmailSent(true);
+              setSendLoading(false)
             }
           },
           (error) => {
             alertify.set("notifier", "position", "top-center");
             alertify.error("There was an error sending the message, try later.");
+            setSendLoading(false)
           }
         );
     } else {
       alertify.set("notifier", "position", "top-center");
       alertify.error("Message has already been sent.");
+      setSendLoading(false)
     }
   };
   useEffect(() => {
@@ -61,10 +66,10 @@ const Contact = () => {
   }, [emailSent]);
 
   const onSubmit = async (data, e) => {
+    
     const wpMessage=`${data.from_name} : ${data.message} email : ${data.from_email}`
     sendEmail(data, e)
     WpMessageSender(wpMessage)
-    
   };
 
   const WpMessageSender= async(data)=>{
@@ -151,9 +156,9 @@ const Contact = () => {
         <div className="flex justify-end">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
+            type="submit" disabled={sendLoading} 
           >
-            Send
+             {sendLoading ? "Sending..." : "Send"}
           </button>
         </div>
       </form>
